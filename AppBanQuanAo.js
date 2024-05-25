@@ -13,10 +13,11 @@ import Cart from './src/user/cart/Cart';
 import Personal from './src/user/personal/Personal';
 import Detail from './src/user/detailSP/Detail';
 import Pay from './src/user/pay/Pay';
+import History from './src/user/history/History';
 const Stack = createNativeStackNavigator();
 export default function AppBanQuanAo() {
   return (
-    <Stack.Navigator initialRouteName="home" screenOptions={{headerShown: false,}}>
+    <Stack.Navigator initialRouteName="login" screenOptions={{headerShown: false,}}>
       <Stack.Screen name="admin" component={Admin}/>
       <Stack.Screen name="addsp" component={AddSp}/>
        <Stack.Screen name="editsp" component={EditSp}/>
@@ -28,6 +29,7 @@ export default function AppBanQuanAo() {
        <Stack.Screen name="personal" component={Personal}/>
        <Stack.Screen name="detail" component={Detail}/>
        <Stack.Screen name="pay" component={Pay}/>
+       <Stack.Screen name="history" component={History}/>
     </Stack.Navigator>
 
   );

@@ -97,6 +97,13 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       width: '40%'
     },
+    tongTien:{
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: 20,
+      textAlign: 'center',
+      marginTop: 8
+    },
     buttonThem: {
       backgroundColor: '#FF9C08',
       paddingVertical: 10,

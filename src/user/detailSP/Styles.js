@@ -1,6 +1,7 @@
 import React from 'react'
-import {View, Text, StyleSheet,Dimensions } from 'react-native'
+import {View, Text, StyleSheet, Dimensions } from 'react-native'
 const { width, height } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -15,19 +16,20 @@ const styles = StyleSheet.create({
     },
     image: {
       width: "100%",
-      height: 300
+      height: height * 0.4 // Adjust height relative to screen height
     },
     body:{
-      
+      flex: 1,
+      padding: 10
     },
     price: {
-      fontSize: 30,
+      fontSize: 24, // Slightly smaller for better fit
       fontWeight: 'bold',
       color: 'red',
       marginLeft: 10
     },
     name:{
-      fontSize: 26,
+      fontSize: 22, // Slightly smaller for better fit
       marginLeft: 15,
       marginTop: 10
     },
@@ -45,8 +47,8 @@ const styles = StyleSheet.create({
     Footer: {
       flexDirection: 'row',
       justifyContent: 'space-around',
-      marginTop: 165
-      
+      marginTop: 20, // Adjust margin for better fit on screen
+      marginBottom: 20 // Add margin bottom for better spacing
     },
     buttonMua: {
       backgroundColor: '#2196F3',
@@ -60,14 +62,14 @@ const styles = StyleSheet.create({
       paddingVertical: 10,
       paddingHorizontal: 20,
       borderRadius: 5,
-      width: '60%'
-      
+      width: '50%' // Adjust width for better fit
     },
     buttonText:{
       color: '#FFFFFF',
-      fontSize: 26,
+      fontSize: 20, // Slightly smaller for better fit
       textAlign: 'center',
       padding: 4
     }
-  });
+});
+
 export default styles;

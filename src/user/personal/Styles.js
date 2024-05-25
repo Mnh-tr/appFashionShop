@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
   body: {
     alignItems: 'center',
-    marginBottom: 170
+    marginBottom: 110
   },
   thongTinCaNhan:{
     width: '80%',

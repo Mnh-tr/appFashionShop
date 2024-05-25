@@ -1,113 +1,138 @@
-import React, { Components,useState } from 'react';
-
-import { StyleSheet, Text, View, Button,Image,TextInput, TouchableOpacity  } from 'react-native';
-import { sanPham, AddProduct } from '../../data/dataSanPham';
-import styles from './Style';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Button, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
-
+import { Picker } from '@react-native-picker/picker';
+import { api } from '../../api/config';
+import styles from './Style';
 
 export default function Add() {
-    const navigation = useNavigation()
-    const goToAdmin =()=>{
-        navigation.navigate('admin')
-    }
-    const [products, setProducts] = useState(sanPham);
-    const [ten, setName] = React.useState('');
-    const [mota, setDes] = React.useState('');
-    const [anh, setImg] = React.useState('');
-    const [gia, setGia] = React.useState('');
-    const [soLuong, setSoLuong] = React.useState('');
-    const newID = parseInt(sanPham[products.length-1].id)
-    const [key, setKey] = React.useState(newID+1);
-  
-    const addProduct = () =>{
-        let ma = key+1 
-        setKey(ma)
-        let sp = { 
-            id: ma.toString(),
-            name: ten,
-            price: gia,
-            count: soLuong,
-            img: anh,
-            Description: mota,
-            
+    const navigation = useNavigation();
+    const [categories, setCategories] = useState([]);
+    const [ten, setName] = useState('');
+    const [mota, setDes] = useState('');
+    const [anh, setImg] = useState('');
+    const [gia, setGia] = useState('');
+    const [soLuong, setSoLuong] = useState('');
+    const [danhMuc, setDanhMuc] = useState('');
+
+    const goToAdmin = () => {
+        navigation.navigate('admin');
+    };
+
+    useEffect(() => {
+        fetch(`http://${api}/apiShopQuanAo/Category/getCategory.php`)
+            .then(response => response.json())
+            .then(data => {
+                setCategories(data);
+            })
+            .catch(error => console.error(error));
+    }, []);
+
+    const addProduct = () => {
+        if (isNaN(danhMuc) || danhMuc === '') {
+            alert('Danh mục không hợp lệ');
+            return;
         }
-        // Cập nhật dữ liệu trong file dataSanPham.js
-        AddProduct(sp);
-        alert("Them Thanh cong!")
-        // onChangeText('');
-        setName('')
-        setDes('')
-        setImg('')
-        setGia('')
-        setSoLuong('')
-    }
-    return (   
-        
+
+        let sp = {
+            name: ten,
+            price: parseFloat(gia),
+            count: parseInt(soLuong),
+            image_url: anh,
+            description: mota, // Thay đổi từ "Description" thành "description" để phản ánh chính xác key trong JSON
+            id_category: parseInt(danhMuc)
+        };
+
+        fetch(`http://${api}/apiShopQuanAo/Product/api_product.php`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(sp)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Thêm sản phẩm thành công') {
+                    Alert.alert('Success', 'Thêm sản phẩm thành công!');
+                    setName('');
+                    setDes('');
+                    setImg('');
+                    setGia('');
+                    setSoLuong('');
+                } else {
+                    Alert.alert('Error', 'Thêm sản phẩm thất bại: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Alert.alert('Error', 'Đã xảy ra lỗi. Vui lòng thử lại sau.');
+            });
+    };
+
+    return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.tittle}>Add Product</Text>
                 <TouchableOpacity style={styles.touImg} onPress={goToAdmin}>
                     <Image
                         style={styles.image}
-                        source={require('../../assets/back.png')} // Đường dẫn tương đối đến tệp ảnh
+                        source={require('../../assets/back.png')}
                     />
                 </TouchableOpacity>
-                
             </View>
             <View style={styles.body}>
-                
                 <View style={styles.inputValue}>
                     <TextInput
                         style={styles.input}
                         onChangeText={(ten) => setName(ten)}
                         value={ten}
                         placeholder="Nhập tên sản phẩm"
-                        // keyboardType="numeric"
                     />
                     <TextInput
                         style={styles.input}
                         onChangeText={(gia) => setGia(gia)}
                         value={gia}
                         placeholder="Nhập giá"
-                        // keyboardType="numeric"
+                        keyboardType="numeric"
                     />
                     <TextInput
                         style={styles.input}
                         onChangeText={(soLuong) => setSoLuong(soLuong)}
                         value={soLuong}
                         placeholder="Nhập số lượng sản phẩm"
-                        // keyboardType="numeric"
+                        keyboardType="numeric"
                     />
                     <TextInput
                         style={styles.input}
                         onChangeText={(mota) => setDes(mota)}
                         value={mota}
                         placeholder="Mô tả sản phẩm"
-                        // keyboardType="numeric"
                     />
                     <TextInput
                         style={styles.input}
                         onChangeText={(anh) => setImg(anh)}
                         value={anh}
                         placeholder="Nhập link ảnh"
-                        // keyboardType="numeric"
                     />
-                    
+                    <Picker
+                        style={styles.inputPicker}
+                        selectedValue={danhMuc}
+                        onValueChange={(itemValue, itemIndex) => setDanhMuc(itemValue)}
+                    >
+                        <Picker.Item label="Danh mục" value="" style={styles.titleThanhToan} />
+                        {categories.map(category => (
+                            <Picker.Item key={category.id_category} label={category.name} value={category.id_category.toString()} />
+                        ))}
+                    </Picker>
                 </View>
-                
             </View>
             <View style={styles.footer}>
                 <TouchableOpacity onPress={addProduct}>
                     <Ionicons name="add-circle-outline" style={styles.iconAdd} />
                     <Text style={styles.footer_add}>Thêm</Text>
                 </TouchableOpacity>
-                
             </View>
-            
         </View>
-    
-    
-  );
+    );
 }

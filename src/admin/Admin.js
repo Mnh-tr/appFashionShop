@@ -1,153 +1,164 @@
-import React, {useState,useEffect} from 'react'
-import {View, Text,Keyboard, TouchableOpacity,TextInput,Image, FlatList,Alert } from 'react-native'
-import styles from './Style'
+import React, { useState, useEffect } from 'react';
+import { View, Text, Alert, TouchableOpacity, Image, FlatList } from 'react-native';
+import styles from './Style';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import { sanPham,deleteProduct } from '../../data/dataSanPham';
 import Footer from '../../components/footer/Footer';
-import { useNavigation,useRoute  } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from '@react-navigation/native';
+import { api } from '../../api/config';
 
-const Item = ({name, price, des, img, onDelete, onEdit}) => {
+const Item = ({ name, price, des, img, onDelete, onEdit }) => {
     const handleDelete = () => {
         Alert.alert(
             'Delete',
-            'Bạn có chắc chăn muốn xóa sản phẩm này chứ!!',
+            'Bạn có chắc chắn muốn xóa sản phẩm này chứ?',
             [
-              {text: 'OK', onPress: () => onDelete()}, // Gọi hàm xóa,
-              {
-                text: 'Cancel',
-                onPress: () => {},
-                style: 'cancel', // Đặt style là 'cancel' cho nút Cancel
-              },
+                { text: 'OK', onPress: () => onDelete() },
+                {
+                    text: 'Cancel',
+                    onPress: () => { },
+                    style: 'cancel',
+                },
             ],
-            {cancelable: true}
-          );
-         
+            { cancelable: true }
+        );
     };
-    
-    const goToEdit =()=>{
+
+    const goToEdit = () => {
         Alert.alert(
             'Edit',
-            'Bạn có chắc chăn muốn chỉnh sửa sản phẩm này chứ!!',
+            'Bạn có chắc chắn muốn chỉnh sửa sản phẩm này chứ?',
             [
-              {text: 'OK', onPress: () => onEdit()}, // Gọi hàm xóa,
-              {
-                text: 'Cancel',
-                onPress: () => {},
-                style: 'cancel', // Đặt style là 'cancel' cho nút Cancel
-              },
+                { text: 'OK', onPress: () => onEdit() },
+                {
+                    text: 'Cancel',
+                    onPress: () => { },
+                    style: 'cancel',
+                },
             ],
-            {cancelable: true}
-          );
-    }
+            { cancelable: true }
+        );
+    };
+
     return (
         <View style={styles.item}>
-             <Image
-            style={styles.avatar}
-            //source={{ uri: `../../assets/${img}` }}
-            source={{uri: img}}
-            resizeMode="contain"
-          >
-            </Image>
-          <View style={styles.sp}>
-            <Text style={styles.name}>{name}</Text>
-            <TouchableOpacity onPress={goToEdit}>
-                <AntDesign name="edit" style={styles.iconEdit}/>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleDelete}>
-                <AntDesign name="delete" style={styles.iconDelete} />
-            </TouchableOpacity>
-            
-            <Text style={styles.price}>{price}đ</Text>
-            <Text style={styles.des}>{des}</Text>
-          </View>
-          
+            <Image
+                style={styles.avatar}
+                source={{ uri: img }}
+                resizeMode="contain"
+            />
+            <View style={styles.sp}>
+                <Text style={styles.name}>{name}</Text>
+                <TouchableOpacity onPress={goToEdit}>
+                    <AntDesign name="edit" style={styles.iconEdit} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleDelete}>
+                    <AntDesign name="delete" style={styles.iconDelete} />
+                </TouchableOpacity>
+                <Text style={styles.price}>{price}đ</Text>
+                <Text style={styles.des}>{des}</Text>
+            </View>
         </View>
     );
 };
 
+const Admin = () => {
+    const [products, setProducts] = useState([]);
 
+    const fetchData = async () => {
+        try {
+            const response = await fetch(`http://${api}/apiSHopQuanAo/Product/api_product.php`);
+            const text = await response.text();
+            const data = response.headers.get('content-type').includes('application/json') ? JSON.parse(text) : text;
 
-const Admin = () =>{
-    const [products, setProducts] = useState(sanPham)
-    const navigation = useNavigation()
-    const goToAdd =()=>{
-        navigation.navigate('addsp')
-    }
-    const handleEditProduct = (productId)=>{
-        navigation.navigate('editsp',{productId })
-    }
-    
-    
-    const handleDeleteProduct = (productId) => {
-        // Gọi hàm deleteProduct để xóa sản phẩm
-        deleteProduct(productId);
-        setProducts(
+            if (typeof data === 'string') {
+                throw new Error(data);
+            }
             
-
-            
-        )
+            setProducts(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
     useFocusEffect(
         React.useCallback(() => {
-            // Gọi hàm setProducts(sanPham) khi màn hình Admin được focus
-            setProducts(sanPham);
-        }, []) 
+            fetchData();
+        }, [])
     );
-    const [isLoading, setIsLoading] = useState(true); // State để kiểm tra trạng thái loading
 
-    // Hàm để cập nhật dữ liệu sản phẩm
-    const capNhatDuLieuSanPham = () => {
-        setProducts(sanPham);
-        setIsLoading(false); // Kết thúc quá trình loading
+    const navigation = useNavigation();
+
+    const goToAdd = () => {
+        navigation.navigate('addsp');
     };
 
-    const route = useRoute();
+    const handleEditProduct = (productId) => {
+        navigation.navigate('editsp', { productId });
+    };
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      if (route.params?.shouldRefresh) {
-        setIsLoading(true);
-        capNhatDuLieuSanPham();
-        navigation.setParams({ shouldRefresh: false });
-      }
-    });
+    const handleDeleteProduct = async (id_product) => {
+        try {
+            const response = await fetch(`http://${api}/apiShopQuanAo/Product/api_product.php?id_product=${id_product}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const text = await response.text();
+            const data = response.headers.get('content-type').includes('application/json') ? JSON.parse(text) : text;
 
-    return unsubscribe;
-  }, [navigation, route.params?.shouldRefresh]);
-    return ( 
+            if (typeof data === 'string') {
+                throw new Error(data);
+            }
+
+            if (data.message === 'Xóa sản phẩm thành công') {
+                alert('Xóa sản phẩm thành công!');
+                fetchData();
+            } else {
+                alert('Xóa sản phẩm thất bại: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Admin</Text>
             </View>
             <View style={styles.body}>
                 <Text style={styles.body_textDM}>Danh mục</Text>
-                
-                <View style={styles.body_background}> 
-                <View style={styles.body_danhMuc}>
-                    <View style={styles.body_Ao}>
-                        <Image
-                            style={styles.image}
-                            source={require('../../assets/aoSoMi1.jpg')} // Đường dẫn tương đối đến tệp ảnh
-                        />
-                        <Text style={styles.body_textAo}>Áo</Text>
+                <View style={styles.body_background}>
+                    <View style={styles.body_danhMuc}>
+                        <View style={styles.body_Ao}>
+                            <Image
+                                style={styles.image}
+                                source={require('../../assets/aoSoMi1.jpg')}
+                            />
+                            <Text style={styles.body_textAo}>Áo</Text>
+                        </View>
+                        <View style={styles.body_Quan}>
+                            <Image
+                                style={styles.image}
+                                source={require('../../assets/jean1.jpg')}
+                            />
+                            <Text style={styles.body_textQuan}>Quần</Text>
+                        </View>
+                        <View style={styles.body_Giay}>
+                            <Image
+                                style={styles.image}
+                                source={require('../../assets/giay1.jpg')}
+                            />
+                            <Text style={styles.body_textGiay}>Giày</Text>
+                        </View>
                     </View>
-                    <View style={styles.body_Quan}>
-                        <Image
-                            style={styles.image}
-                            source={require('../../assets/jean1.jpg')} 
-                        />
-                        <Text style={styles.body_textQuan}>Quần</Text>
-                    </View>
-                    <View style={styles.body_Giay}>
-                        <Image
-                            style={styles.image}
-                            source={require('../../assets/giay1.jpg')} 
-                        />
-                        <Text style={styles.body_textGiay}>Giày</Text>
-                    </View>
-                </View>
                 </View>
 
                 <View style={styles.body_listSP}>
@@ -156,24 +167,28 @@ const Admin = () =>{
                         <TouchableOpacity onPress={goToAdd}>
                             <Ionicons name="add-circle-outline" style={styles.iconAdd} />
                         </TouchableOpacity>
-                        
                     </View>
                     <View style={styles.listSP}>
-                    <FlatList
-                        data={products}
-                        renderItem={({item}) => <Item name={item.name} price={item.price} des={item.Description} img={item.img} onDelete={() => handleDeleteProduct(item.id)} onEdit={() => handleEditProduct(item.id)}/>}
-                        
-                        keyExtractor={item => item.id}
-                    >
-
-                    </FlatList>
-
+                        <FlatList
+                            data={products}
+                            renderItem={({ item }) => (
+                                <Item
+                                    name={item.name}
+                                    price={item.price}
+                                    des={item.Description}
+                                    img={item.image_url}
+                                    onDelete={() => handleDeleteProduct(item.id_product)}
+                                    onEdit={() => handleEditProduct(item.id_product)}
+                                />
+                            )}
+                            keyExtractor={item => item.id_product.toString()}
+                        />
                     </View>
                 </View>
-                
             </View>
-            <Footer/>
+            <Footer />
         </View>
-    )
-}
+    );
+};
+
 export default Admin;

@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
-import { Text, View, Image, FlatList, TouchableOpacity,Alert } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
-import styles from './Styles';
-import { spGioHang } from '../../../data/dataGioHang';
-import { useNavigation } from "@react-navigation/native";
-import Footer from '../../../components/footerUser/Footer';
+import React, { useEffect, useState } from 'react';
+import { Text, View, Image, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
-import { Fontisto } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
-import { RectButton, Swipeable } from 'react-native-gesture-handler';
+import Footer from '../../../components/footerUser/Footer';
+import { Swipeable } from 'react-native-gesture-handler';
+import styles from './Styles';
+import { api } from '../../../api/config'
+import axios from 'axios';
+import { useNavigation, useRoute } from "@react-navigation/native";
 const Item = ({ name, price, des, img, onDelete }) => {
     return (
         <Swipeable
@@ -39,9 +37,24 @@ const Item = ({ name, price, des, img, onDelete }) => {
 };
 
 export default function Cart() {
-    const [products, setProducts] = useState(spGioHang);
-    const navigation = useNavigation();
+    const route = useRoute();
+    const { id_user } = route.params; // Nhận id_user từ params
+    const [cartProducts, setCartProducts] = useState([]);
 
+    useEffect(() => {
+        const fetchCartProducts = async () => {
+            try {
+                const response = await axios.get(`http://${api}/apiShopQuanAo/Cart/api_cart.php?userId=${id_user}`);
+                setCartProducts(response.data);
+            } catch (error) {
+                console.error('Error:', error);
+                Alert.alert('Error', error.message);
+            }
+        };
+
+        fetchCartProducts();
+    }, [id_user]);
+    // thao tác xóa 1 sản phẩm ra khỏi giỏ hàng
     const handleDelete = (id) => {
         Alert.alert(
             "Xóa sản phẩm",
@@ -50,17 +63,34 @@ export default function Cart() {
                 {
                     text: "Hủy",
                     style: "cancel"
-                }, 
+                },
                 {
                     text: "Xóa",
-                    onPress: () => {
-                        setProducts(products.filter(item => item.id !== id));
+                    onPress: async () => {
+                        try {
+                            const userId = id_user; // Thay đổi userId tương ứng
+                            const response = await axios.delete(`http://${api}/apiShopQuanAo/Cart/api_cart.php`, {
+                                data: { userId, productId: id },
+                            });
+
+                            if (response.data.message.includes('thành công')) {
+                                // Nếu xóa thành công trên máy chủ, cập nhật lại danh sách sản phẩm trong giỏ hàng của bạn
+                                setCartProducts(cartProducts.filter(item => item.id_product !== id));
+                                alert('Xóa sản phẩm thành công');
+                            } else {
+                                alert('Xóa sản phẩm thất bại: ' + response.data.message);
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            alert('Xóa sản phẩm thất bại: ' + error.message);
+                        }
                     },
                     style: "destructive"
                 }
             ]
         );
     };
+
 
     return (
         <View style={styles.container}>
@@ -72,21 +102,21 @@ export default function Cart() {
             </View>
             <View style={styles.body}>
                 <FlatList
-                    data={products}
+                    data={cartProducts}
                     renderItem={({ item }) => (
                         <Item
                             name={item.name}
                             price={item.price}
                             des={item.Description}
-                            img={item.img}
-                            onDelete={() => handleDelete(item.id)}
+                            img={item.image_url}
+                            onDelete={() => handleDelete(item.id_product)}
                         />
                     )}
-                    keyExtractor={item => item.id}
+                    keyExtractor={item => item.id_product.toString()}
                     contentContainerStyle={styles.listSP}
                 />
             </View>
-            <Footer />
+            <Footer userID={id_user}/>
         </View>
     );
 }

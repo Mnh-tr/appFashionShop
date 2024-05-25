@@ -39,6 +39,15 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         
     },
+    inputPicker: {
+        height: 40,
+        width: '80%',
+        borderColor: 'gray',
+        borderWidth: 1,
+      },
+      titleThanhToan:{
+        color: 'red'
+      },
     btnAdd:{
         marginTop: 20
     },
