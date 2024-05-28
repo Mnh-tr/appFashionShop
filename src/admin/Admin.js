@@ -99,6 +99,7 @@ const Admin = () => {
     };
 
     const handleEditProduct = (productId) => {
+        console.log(productId)
         navigation.navigate('editsp', { productId });
     };
 

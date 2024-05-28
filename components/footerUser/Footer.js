@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -9,21 +9,21 @@ const Footer = ({ userID }) => {
     const [soLuongSP, setSLSanPham] = useState(0);
     const route = useRoute();
     const currentRoute = route.name;
-    useEffect(() => {
-        const fetchProductCount = async () => {
-          try {
+
+    const fetchProductCount = async () => {
+        try {
             const response = await fetch(`http://${api}/apiShopQuanAo/Cart/api_cart.php?userId=${userID}`);
             const products = await response.json();
             setSLSanPham(products.length);
-            
-          } catch (error) {
-            console.error('Error fetching product count:', error);
-            
-          }
-        };
-    
+
+        } catch (error) {
+            console.error('Lỗi khi lấy dữ liệu giỏ hàng:', error);
+
+        }
+    };
+    useEffect(() => {
         fetchProductCount();
-      }, [userID]);
+    }, [userID]);
     const goToDanhMuc = () => {
         navigation.navigate('category', { id_user: userID });
     };
@@ -46,12 +46,12 @@ const Footer = ({ userID }) => {
 
     return (
         <View style={styles.footer}>
-            <TouchableOpacity onPress={goToTrangChu}>
-                <View style={styles.iconfooter}>
-                    <AntDesign name="home" style={[styles.iconAdmin, { color: getIconColor('home') }]} />
-                    <Text style={styles.footer_admin}>Trang chủ</Text>
-                </View>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={goToTrangChu}>
+                    <View style={styles.iconfooter}>
+                        <AntDesign name="home" style={[styles.iconAdmin, { color: getIconColor('home') }]} />
+                        <Text style={styles.footer_admin}>Trang chủ</Text>
+                    </View>
+                </TouchableOpacity>
             <TouchableOpacity onPress={goToDanhMuc}>
                 <View style={styles.iconfooter}>
                     <MaterialIcons name="category" style={[styles.iconAdmin, { color: getIconColor('category') }]} />
@@ -62,8 +62,8 @@ const Footer = ({ userID }) => {
                 <View style={styles.iconfooter}>
                     <AntDesign name="shoppingcart" style={[styles.iconAdmin, { color: getIconColor('cart') }]} />
                     {soLuongSP > 0 && (
-                        <View style={styles.cartItemCountContainer}>
-                            <Text style={styles.cartItemCountText}>{soLuongSP}</Text>
+                        <View style={styles.box_soLuon}>
+                            <Text style={styles.soLuong}>{soLuongSP}</Text>
                         </View>
                     )}
                     <Text style={styles.footer_admin}>Giỏ hàng</Text>

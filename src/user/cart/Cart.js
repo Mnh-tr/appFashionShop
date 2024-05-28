@@ -41,17 +41,17 @@ export default function Cart() {
     const { id_user } = route.params; // Nhận id_user từ params
     const [cartProducts, setCartProducts] = useState([]);
 
-    useEffect(() => {
-        const fetchCartProducts = async () => {
-            try {
-                const response = await axios.get(`http://${api}/apiShopQuanAo/Cart/api_cart.php?userId=${id_user}`);
-                setCartProducts(response.data);
-            } catch (error) {
-                console.error('Error:', error);
-                Alert.alert('Error', error.message);
-            }
-        };
 
+    const fetchCartProducts = async () => {
+        try {
+            const response = await axios.get(`http://${api}/apiShopQuanAo/Cart/api_cart.php?userId=${id_user}`);
+            setCartProducts(response.data);
+        } catch (error) {
+            console.error('Error:', error);
+            Alert.alert('Error', error.message);
+        }
+    };
+    useEffect(() => {
         fetchCartProducts();
     }, [id_user]);
     // thao tác xóa 1 sản phẩm ra khỏi giỏ hàng
@@ -74,7 +74,7 @@ export default function Cart() {
                             });
 
                             if (response.data.message.includes('thành công')) {
-                                // Nếu xóa thành công trên máy chủ, cập nhật lại danh sách sản phẩm trong giỏ hàng của bạn
+                                // Nếu xóa thành công trên máy chủ, cập nhật lại danh sách sản phẩm trong giỏ hàng
                                 setCartProducts(cartProducts.filter(item => item.id_product !== id));
                                 alert('Xóa sản phẩm thành công');
                             } else {
@@ -116,7 +116,7 @@ export default function Cart() {
                     contentContainerStyle={styles.listSP}
                 />
             </View>
-            <Footer userID={id_user}/>
+            <Footer userID={id_user} />
         </View>
     );
 }

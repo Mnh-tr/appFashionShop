@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         fontSize: 10,
         marginLeft: 4
     },
-    cartItemCountContainer: {
+    box_soLuon: {
         position: 'absolute',
         right: 0,
         top: 0,
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    cartItemCountText: {
+    soLuong: {
         color: 'white',
         fontSize: 12,
         fontWeight: 'bold'
