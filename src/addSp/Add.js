@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useLayoutEffect } from 'react';
 import { StyleSheet, Text, View, Button, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
@@ -15,7 +15,22 @@ export default function Add() {
     const [gia, setGia] = useState('');
     const [soLuong, setSoLuong] = useState('');
     const [danhMuc, setDanhMuc] = useState('');
-
+    //chỉnh sửa tiêu đề cho màn hình:
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'Thêm Sản Phẩm',
+            headerTitleAlign: 'center',
+            headerStyle: {
+                backgroundColor: '#FFD6A5',
+            },
+            headerTitleStyle: {
+                fontSize: 35,
+                color: '#FF7F09',
+                width: '115%',
+                marginLeft: -10
+            },
+        });
+    }, [navigation]);
     const goToAdmin = () => {
         navigation.navigate('admin');
     };
@@ -73,13 +88,13 @@ export default function Add() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.tittle}>Add Product</Text>
-                <TouchableOpacity style={styles.touImg} onPress={goToAdmin}>
+                {/* <Text style={styles.tittle}>Add Product</Text> */}
+                {/* <TouchableOpacity style={styles.touImg} onPress={goToAdmin}>
                     <Image
                         style={styles.image}
                         source={require('../../assets/back.png')}
                     />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
             <View style={styles.body}>
                 <View style={styles.inputValue}>

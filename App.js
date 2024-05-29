@@ -9,6 +9,7 @@ export default function App() {
     
     <GestureHandlerRootView style={{ flex: 1 }}>
     <NavigationContainer>
+      
       <AppBanQuanAo/>
     </NavigationContainer>
   </GestureHandlerRootView>

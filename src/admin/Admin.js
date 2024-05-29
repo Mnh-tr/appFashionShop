@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useLayoutEffect } from 'react';
 import { View, Text, Alert, TouchableOpacity, Image, FlatList } from 'react-native';
 import styles from './Style';
 import { Ionicons } from '@expo/vector-icons';
@@ -65,7 +65,23 @@ const Item = ({ name, price, des, img, onDelete, onEdit }) => {
 
 const Admin = () => {
     const [products, setProducts] = useState([]);
-
+    const navigation = useNavigation();
+//chỉnh sửa tiêu đề cho màn hình:
+useLayoutEffect(() => {
+    navigation.setOptions({
+        title: 'Admin Dashboard',
+        headerTitleAlign: 'center',
+        headerStyle: {
+            backgroundColor: '#FFD6A5',
+        },
+        headerTitleStyle: {
+            fontSize: 35,
+            color: '#FF7F09',
+            width: '130%', 
+            marginLeft: -10
+        },
+    });
+}, [navigation]);
     const fetchData = async () => {
         try {
             const response = await fetch(`http://${api}/apiSHopQuanAo/Product/api_product.php`);
@@ -92,7 +108,7 @@ const Admin = () => {
         }, [])
     );
 
-    const navigation = useNavigation();
+    
 
     const goToAdd = () => {
         navigation.navigate('addsp');
@@ -131,9 +147,9 @@ const Admin = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
+            {/* <View style={styles.header}>
                 <Text style={styles.title}>Admin</Text>
-            </View>
+            </View> */}
             <View style={styles.body}>
                 <Text style={styles.body_textDM}>Danh mục</Text>
                 <View style={styles.body_background}>
@@ -165,9 +181,9 @@ const Admin = () => {
                 <View style={styles.body_listSP}>
                     <View style={styles.body_titleList}>
                         <Text style={styles.body_textListsp}>Danh sách sản phẩm</Text>
-                        <TouchableOpacity onPress={goToAdd}>
+                        {/* <TouchableOpacity onPress={goToAdd}>
                             <Ionicons name="add-circle-outline" style={styles.iconAdd} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                     <View style={styles.listSP}>
                         <FlatList

@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     body:{
-        height: (height * 0.78)
+        height: (height * 0.76)
     },
     tittle:{
         fontSize: 35,
