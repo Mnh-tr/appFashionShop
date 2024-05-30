@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import axios from 'axios';
 import { api } from '../../api/config';
+import styles from './Styles';
 import { Picker } from '@react-native-picker/picker';
 
 export default function Thongke() {
@@ -58,26 +59,27 @@ export default function Thongke() {
       <View style={styles.pickerContainer}>
         <Text style={styles.label}>Chọn năm:</Text>
         <Picker
-          selectedValue={year}
-          style={styles.picker}
-          onValueChange={handleYearChange}
-        >
-          {years.map(y => (
-            <Picker.Item key={y} label={y.toString()} value={y} />
-          ))}
-        </Picker>
+  selectedValue={year}
+  style={styles.picker}
+  onValueChange={handleYearChange}
+>
+  {years.map(y => (
+    <Picker.Item key={`year_${y}`} label={y.toString()} value={y} />
+  ))}
+</Picker>
+
       </View>
       <View style={styles.pickerContainer}>
         <Text style={styles.label}>Chọn tháng:</Text>
         <Picker
-          selectedValue={month}
-          style={styles.picker}
-          onValueChange={handleMonthChange}
-        >
-          {months.map(m => (
-            <Picker.Item key={m} label={m.toString()} value={m} />
-          ))}
-        </Picker>
+  selectedValue={month}
+  style={styles.picker}
+  onValueChange={handleMonthChange}
+>
+  {months.map(m => (
+    <Picker.Item key={`month_${m}`} label={m.toString()} value={m} />
+  ))}
+</Picker>
       </View>
       {revenue !== null && (
         <Text style={styles.info}>Doanh thu tháng {month} là: {Number(revenue)} VND</Text>
@@ -86,47 +88,3 @@ export default function Thongke() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
-  },
-  pickerContainer: {
-    width: '80%',
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 18,
-    marginBottom: 5,
-    color: '#555',
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ccc',
-  },
-  info: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginTop: 20,
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    color: '#333',
-  },
-});

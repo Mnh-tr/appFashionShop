@@ -29,6 +29,7 @@ function AdminDrawer() {
       <Drawer.Screen name="Thêm sản phẩm" component={AddSp} />
       <Drawer.Screen name="Quản lý user" component={QLUser} />
       <Drawer.Screen name="Quản lý đơn hàng" component={QLdonHang} />
+      <Drawer.Screen name="Thống kê" component={Thongke} />
       <Drawer.Screen name="Thoát" component={Login} options={{ headerShown: false }} />
     </Drawer.Navigator>
   );
