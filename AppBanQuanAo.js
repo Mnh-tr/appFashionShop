@@ -21,6 +21,7 @@ const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 import QLUser from './src/qlUser/QLUser';
 import QLdonHang from './src/qlDonHang/QLdonHang';
+import Thongke from './src/thongke/Thongke';
 function AdminDrawer() {
   return (
     <Drawer.Navigator initialRouteName="AdminMain">
@@ -45,6 +46,7 @@ export default function AppBanQuanAo() {
        <Stack.Screen name="home" component={Home}/>
        <Stack.Screen name="category" component={Category}/>
        <Stack.Screen name="cart" component={Cart}/>
+       <Stack.Screen name="thongke" component={Thongke} />
        <Stack.Screen name="personal" component={Personal}/>
        <Stack.Screen name="detail" component={Detail}/>
        <Stack.Screen name="pay" component={Pay}/>

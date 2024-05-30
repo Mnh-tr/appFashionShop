@@ -38,14 +38,24 @@ export default function Personal() {
   const exit = () => {
     navigation.navigate('login');
   };
+  const gotoThongke = ()=> {
+    navigation.navigate('thongke');
+  };
 
   function CheckAdmin({ user, goToAdmin }) {
     if (user && user.role === "admin") {
       return (
-        <TouchableOpacity style={styles.button} onPress={goToAdmin}>
+        
+        <><TouchableOpacity style={styles.button} onPress={goToAdmin}>
           <FontAwesome name="bars" size={24} color="black" />
           <Text style={styles.buttonText}>Admin</Text>
+
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={gotoThongke}>
+            <FontAwesome name="" size={24} color="black" />
+            <Text style={styles.buttonText}>Thống kê</Text>
+
+          </TouchableOpacity></>
       );
     }else{
         return (
