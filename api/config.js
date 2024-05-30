@@ -1,1 +1,1 @@
-export const api = '192.168.1.30';
+export const api = '192.168.1.6';
