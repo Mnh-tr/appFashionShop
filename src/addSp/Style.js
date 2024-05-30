@@ -2,17 +2,18 @@ import React from 'react'
 import {View, Text, StyleSheet,Dimensions } from 'react-native'
 const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
-        backgroundColor: "#FFD6A5"
+        backgroundColor: "#FFD6A5",
+        padding: 10,
     },
+
     header:{
         justifyContent:'center',
-        marginTop: 30,
         alignItems: 'center',
     },
     body:{
-        height: (height * 0.76)
+        height: (height * 0.8),
     },
     tittle:{
         fontSize: 35,
@@ -52,13 +53,13 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     footer:{
-        //position: 'absolute',
         backgroundColor: "#FF9C08",
-        justifyContent: 'center',
+        
         alignItems: 'center',
         borderRadius: 30,
-        // marginTop:250,
         width: '100%',
+        
+
         
     },
     iconAdd:{
@@ -68,6 +69,27 @@ const styles = StyleSheet.create({
     footer_add:{
         //fontWeight: 'bold',
         fontSize: 20
-    }
+    },
+    imagePickerContainer: {
+        alignItems: 'center',
+        
+    },
+    imagePickerButton: {
+        backgroundColor: '#378CE7',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+    },
+    imagePickerButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    selectedImage: {
+        width: 89,
+        height: 96,
+        marginTop: 20,
+        borderRadius: 10,
+    },
 })
 export default styles;

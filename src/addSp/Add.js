@@ -1,8 +1,9 @@
-import React, { useState, useEffect,useLayoutEffect } from 'react';
-import { StyleSheet, Text, View, Button, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { Picker } from '@react-native-picker/picker';
+import * as ImagePicker from 'expo-image-picker';
 import { api } from '../../api/config';
 import styles from './Style';
 
@@ -15,7 +16,8 @@ export default function Add() {
     const [gia, setGia] = useState('');
     const [soLuong, setSoLuong] = useState('');
     const [danhMuc, setDanhMuc] = useState('');
-    //chỉnh sửa tiêu đề cho màn hình:
+
+    // Chỉnh sửa tiêu đề cho màn hình
     useLayoutEffect(() => {
         navigation.setOptions({
             title: 'Thêm Sản Phẩm',
@@ -24,16 +26,13 @@ export default function Add() {
                 backgroundColor: '#FFD6A5',
             },
             headerTitleStyle: {
-                fontSize: 35,
+                fontSize: 25,
                 color: '#FF7F09',
-                width: '115%',
-                marginLeft: -10
+                width: '100%',
+                textAlign: 'center'
             },
         });
     }, [navigation]);
-    const goToAdmin = () => {
-        navigation.navigate('admin');
-    };
 
     useEffect(() => {
         fetch(`http://${api}/apiShopQuanAo/Category/getCategory.php`)
@@ -55,7 +54,7 @@ export default function Add() {
             price: parseFloat(gia),
             count: parseInt(soLuong),
             image_url: anh,
-            description: mota, // Thay đổi từ "Description" thành "description" để phản ánh chính xác key trong JSON
+            Description: mota,
             id_category: parseInt(danhMuc)
         };
 
@@ -75,6 +74,7 @@ export default function Add() {
                     setImg('');
                     setGia('');
                     setSoLuong('');
+                    setDanhMuc('');
                 } else {
                     Alert.alert('Error', 'Thêm sản phẩm thất bại: ' + data.message);
                 }
@@ -83,6 +83,19 @@ export default function Add() {
                 console.error('Error:', error);
                 Alert.alert('Error', 'Đã xảy ra lỗi. Vui lòng thử lại sau.');
             });
+    };
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [2, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setImg(result.assets[0].uri);
+        }
     };
 
     return (
@@ -124,12 +137,13 @@ export default function Add() {
                         value={mota}
                         placeholder="Mô tả sản phẩm"
                     />
-                    <TextInput
-                        style={styles.input}
-                        onChangeText={(anh) => setImg(anh)}
-                        value={anh}
-                        placeholder="Nhập link ảnh"
-                    />
+                    <View style={styles.imagePickerContainer}>
+                    {anh ? <Image source={{ uri: anh }} style={styles.selectedImage} /> : null}
+                        <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
+                            <Text style={styles.imagePickerButtonText}>Chọn ảnh</Text>
+                        </TouchableOpacity>
+                        
+                    </View>
                     <Picker
                         style={styles.inputPicker}
                         selectedValue={danhMuc}

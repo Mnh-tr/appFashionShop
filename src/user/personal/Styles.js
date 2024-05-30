@@ -21,11 +21,11 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: 'bold', 
   },
   body: {
     alignItems: 'center',
-    marginBottom: 110
+    marginBottom: 280
   },
   thongTinCaNhan:{
     width: '80%',
