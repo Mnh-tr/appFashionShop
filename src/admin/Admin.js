@@ -75,10 +75,10 @@ useLayoutEffect(() => {
             backgroundColor: '#FFD6A5',
         },
         headerTitleStyle: {
-            fontSize: 35,
+            fontSize: 25,
             color: '#FF7F09',
-            width: '130%', 
-            marginLeft: -10
+            width: '110%', 
+            textAlign: 'center',
         },
     });
 }, [navigation]);

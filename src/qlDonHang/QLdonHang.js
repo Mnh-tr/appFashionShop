@@ -13,11 +13,11 @@ const QLdonHang = () => {
                 backgroundColor: '#FFD6A5',
             },
             headerTitleStyle: {
-                fontSize: 35,
+                fontSize: 25,
                 color: '#FF7F09',
                 width: '119%', // Đặt độ rộng tối đa cho tiêu đề
                 textAlign: 'center',
-                marginLeft: -10
+                
             },
         });
     }, [navigation]);

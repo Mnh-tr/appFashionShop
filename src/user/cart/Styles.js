@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        paddingVertical: 10,
+        paddingVertical: 20,
     },
     title: {
         fontSize: 35,
@@ -20,19 +20,34 @@ const styles = StyleSheet.create({
         flex: 1,
         textAlign: 'center',
     },
-    menuIcon: {
+    // menuIcon: {
+    //     position: 'absolute',
+    //     right: 20,
+
+    // },
+    buttonText: {
+        fontSize: 16,
+        
+    },
+    button: {
         position: 'absolute',
         right: 20,
+        backgroundColor: '#90D26D',
+        padding: 4,
+        paddingHorizontal: 10,
+        borderRadius: 10,
+        alignItems: 'center',
+        bottom: -16,
 
     },
     body: {
         flex: 9,
-        paddingTop: 10,
+        paddingTop: 20,
     },
     listSP: {
         paddingHorizontal: 10,
     },
-    spItem:{
+    spItem: {
         flexDirection: 'row',
     },
     item: {
@@ -42,7 +57,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 10,
         padding: 10,
-        width: 370
+        width: 340
     },
     avatar: {
         width: 89,
@@ -62,18 +77,18 @@ const styles = StyleSheet.create({
     des: {
         fontSize: 11,
     },
-    check:{
+    check: {
         alignItems: "center",
         marginLeft: 14,
         justifyContent: "center",
-        
+
     },
     checkbox: {
-       fontSize: 22
+        fontSize: 22
     },
-    
 
-    
+
+
     rightAction: {
         backgroundColor: 'red',
         justifyContent: 'center',
@@ -84,6 +99,10 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         padding: 10,
+    },
+    // đổi màu khi đè vào item
+    selectedItem: {
+        backgroundColor: '#FF7D29',
     },
 });
 

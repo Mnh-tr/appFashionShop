@@ -128,7 +128,7 @@ const Pay = ({ route }) => {
                         <Picker.Item label="Thanh toán khi nhận hàng" value="pay" />
                         <Picker.Item label="Thanh toán online" value="onl" />
 
-                        {/* Thêm các mục khác nếu cần */}
+                        
                     </Picker>
 
 

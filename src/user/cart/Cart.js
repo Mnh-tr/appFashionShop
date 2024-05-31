@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Image, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, Image, FlatList, TouchableOpacity, Alert,TouchableWithoutFeedback  } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import Footer from '../../../components/footerUser/Footer';
 import { Swipeable } from 'react-native-gesture-handler';
@@ -7,7 +7,8 @@ import styles from './Styles';
 import { api } from '../../../api/config'
 import axios from 'axios';
 import { useNavigation, useRoute } from "@react-navigation/native";
-const Item = ({ name, price, des, img, onDelete }) => {
+
+const Item = ({ name, price, des, img, onDelete, onSelect, isSelected }) => {
     return (
         <Swipeable
             renderRightActions={() => (
@@ -18,30 +19,39 @@ const Item = ({ name, price, des, img, onDelete }) => {
                 </View>
             )}
         >
-            <View style={styles.spItem}>
-                <View style={styles.item}>
-                    <Image
-                        style={styles.avatar}
-                        source={{ uri: img }}
-                        resizeMode="contain"
-                    />
-                    <View style={styles.sp}>
-                        <Text style={styles.name}>{name}</Text>
-                        <Text style={styles.price}>{price}đ</Text>
-                        <Text style={styles.des}>{des}</Text>
+            <TouchableWithoutFeedback
+                onLongPress={onSelect}
+            >
+                <View style={styles.spItem}>
+                    <View style={[styles.item, isSelected && styles.selectedItem]}>
+                        <Image
+                            style={styles.avatar}
+                            source={{ uri: img }}
+                            resizeMode="contain"
+                        />
+                        <View style={styles.sp}>
+                            <Text style={styles.name}>{name}</Text>
+                            <Text style={styles.price}>{price}đ</Text>
+                            <Text style={styles.des}>{des}</Text>
+                        </View>
                     </View>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
         </Swipeable>
     );
 };
+
+
+
 
 export default function Cart() {
     const route = useRoute();
     const { id_user } = route.params; // Nhận id_user từ params
     const [cartProducts, setCartProducts] = useState([]);
+    const [selectedItems, setSelectedItems] = useState([]);
+    const navigation = useNavigation();
 
-
+    console.log(selectedItems)
     const fetchCartProducts = async () => {
         try {
             const response = await axios.get(`http://${api}/apiShopQuanAo/Cart/api_cart.php?userId=${id_user}`);
@@ -51,10 +61,11 @@ export default function Cart() {
             Alert.alert('Error', error.message);
         }
     };
+
     useEffect(() => {
         fetchCartProducts();
     }, [id_user]);
-    // thao tác xóa 1 sản phẩm ra khỏi giỏ hàng
+
     const handleDelete = (id) => {
         Alert.alert(
             "Xóa sản phẩm",
@@ -91,14 +102,28 @@ export default function Cart() {
         );
     };
 
-
+    const handleSelectItem = (id) => {
+        setSelectedItems(prevSelectedItems => {
+            if (prevSelectedItems.includes(id)) {
+                return prevSelectedItems.filter(itemId => itemId !== id);
+            } else {
+                return [...prevSelectedItems, id];
+            }
+        });
+    };
+    const GoToPay = () => {
+        navigation.navigate('pays', { selectedItems, id_user });
+    };
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Giỏ hàng</Text>
-                <TouchableOpacity>
-                    <Entypo name="menu" size={42} color="black" style={styles.menuIcon} />
-                </TouchableOpacity>
+                {selectedItems.length > 0 && (
+                    <TouchableOpacity style={styles.button} onPress={GoToPay}>
+                       <Text style={styles.buttonText}>Mua tất cả</Text>
+                        {/* <Entypo name="menu" size={42} color="black" style={styles.menuIcon} /> */}
+                    </TouchableOpacity>
+                )}
             </View>
             <View style={styles.body}>
                 <FlatList
@@ -110,6 +135,8 @@ export default function Cart() {
                             des={item.Description}
                             img={item.image_url}
                             onDelete={() => handleDelete(item.id_product)}
+                            onSelect={() => handleSelectItem(item.id_product)}
+                            isSelected={selectedItems.includes(item.id_product)}
                         />
                     )}
                     keyExtractor={item => item.id_product.toString()}

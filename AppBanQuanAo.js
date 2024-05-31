@@ -15,12 +15,15 @@ import Cart from './src/user/cart/Cart';
 import Personal from './src/user/personal/Personal';
 import Detail from './src/user/detailSP/Detail';
 import Pay from './src/user/pay/Pay';
+import Pays from './src/user/pays/Pays';
 import History from './src/user/history/History';
 import styles from './StylesAppBQA';
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 import QLUser from './src/qlUser/QLUser';
 import QLdonHang from './src/qlDonHang/QLdonHang';
+import Thongke from './src/thongke/Thongke';
+import BieuDo from './src/bieuDo/BieuDo';
 function AdminDrawer() {
   return (
     <Drawer.Navigator initialRouteName="AdminMain">
@@ -28,6 +31,8 @@ function AdminDrawer() {
       <Drawer.Screen name="Thêm sản phẩm" component={AddSp} />
       <Drawer.Screen name="Quản lý user" component={QLUser} />
       <Drawer.Screen name="Quản lý đơn hàng" component={QLdonHang} />
+      <Drawer.Screen name="Thống kê" component={Thongke} />
+      <Drawer.Screen name="Biểu Đồ" component={BieuDo} />
       <Drawer.Screen name="Thoát" component={Login} options={{ headerShown: false }} />
     </Drawer.Navigator>
   );
@@ -45,9 +50,11 @@ export default function AppBanQuanAo() {
        <Stack.Screen name="home" component={Home}/>
        <Stack.Screen name="category" component={Category}/>
        <Stack.Screen name="cart" component={Cart}/>
+       <Stack.Screen name="thongke" component={Thongke} />
        <Stack.Screen name="personal" component={Personal}/>
        <Stack.Screen name="detail" component={Detail}/>
        <Stack.Screen name="pay" component={Pay}/>
+       <Stack.Screen name="pays" component={Pays}/>
        <Stack.Screen name="history" component={History}/>
     </Stack.Navigator>
   );

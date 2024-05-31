@@ -13,7 +13,7 @@ export default function Personal() {
   const { id_user } = route.params;
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
-    
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -38,22 +38,28 @@ export default function Personal() {
   const exit = () => {
     navigation.navigate('login');
   };
+  const gotoThongke = () => {
+    navigation.navigate('thongke');
+  };
 
   function CheckAdmin({ user, goToAdmin }) {
     if (user && user.role === "admin") {
       return (
-        <TouchableOpacity style={styles.button} onPress={goToAdmin}>
+
+        <><TouchableOpacity style={styles.button} onPress={goToAdmin}>
           <FontAwesome name="bars" size={24} color="black" />
           <Text style={styles.buttonText}>Admin</Text>
+
+        </TouchableOpacity>
+        </>
+      );
+    } else {
+      return (
+        <TouchableOpacity style={styles.button}>
+
+          <Text style={styles.buttonText}>Xóa tài khoản</Text>
         </TouchableOpacity>
       );
-    }else{
-        return (
-            <TouchableOpacity style={styles.button}>
-              
-              <Text style={styles.buttonText}>Xóa tài khoản</Text>
-            </TouchableOpacity>
-          );
     }
     return null;
   }
