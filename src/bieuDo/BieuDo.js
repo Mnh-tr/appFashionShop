@@ -22,7 +22,9 @@ const BieuDo = () => {
       );
       const results = await Promise.all(promises);
       const formattedData = results.map(data => data.totalRevenue);
+      console.log(formattedData)
       const intData = formattedData.map(monthData => monthData.length ? parseInt(monthData[0].total_revenue) : 0);
+      console.log(intData)
       setRevenueData(intData);
       setLoading(false);
     } catch (error) {

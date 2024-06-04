@@ -1,12 +1,19 @@
-import { StyleSheet, Text, View, Image, TextInput, ActivityIndicator, TouchableOpacity, Alert, FlatList } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import styles from './Styles';
-import { useNavigation, useRoute } from "@react-navigation/native";
-import Footer from '../../../components/footerUser/Footer';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { StyleSheet, Text, View, Image, TextInput, ActivityIndicator, TouchableOpacity, Alert, FlatList, Dimensions } from 'react-native';
+import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
 import { EvilIcons } from '@expo/vector-icons';
-import { api } from '../../../api/config';
-import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
+import { api } from '../../../api/config';
+import styles from './Styles';
+import Footer from '../../../components/footerUser/Footer';
+
+const data = [
+    { id: '1', hinhanh: 'https://intphcm.com/data/upload/logo-banner-thoi-trang.jpg', },
+    { id: '2', hinhanh: 'https://intphcm.com/data/upload/banner-thoi-trang-bi-an.jpg', },
+    { id: '3', hinhanh: 'https://intphcm.com/data/upload/banner-thoi-trang-nam.jpg', },
+    { id: '4', hinhanh: 'https://intphcm.com/data/upload/tieu-de-banner-thoi-trang.jpg', },
+    { id: '5', hinhanh: 'https://intphcm.com/data/upload/dung-luong-banner-thoi-trang.jpg', },
+];
 
 export default function Home() {
     const [products, setProducts] = useState([]);
@@ -14,45 +21,69 @@ export default function Home() {
     const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
     const route = useRoute();
-    const { id_user } = route.params; // Nhận id_user từ params
-    console.log(id_user)
-    const fetchData = () => {
+    const { id_user } = route.params;
+    const flatListRef = useRef(null);
+    const itemWidth = Dimensions.get('window').width;
+    const [scrollOffset, setScrollOffset] = useState(0);
+    const [scrollDirection, setScrollDirection] = useState(1);
+
+    const fetchData = useCallback(() => {
         setLoading(true);
         axios.get(`http://${api}/apiSHopQuanAo/Product/api_product.php`, {
-            params: { searchTerm } // Truyền từ khóa tìm kiếm vào yêu cầu GET
+            params: { searchTerm }
         })
-        .then(response => {
-            setProducts(response.data);
-            setLoading(false);
-        })
-        .catch(error => {
-            console.error(error);
-            setLoading(false);
-        });
-    };
+            .then(response => {
+                setProducts(response.data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error(error);
+                setLoading(false);
+            });
+    }, [searchTerm]);
 
     useEffect(() => {
-        fetchData(); // Gọi hàm tải danh sách sản phẩm khi trang Home được tải lần đầu tiên
-    }, []);
+        fetchData();
+    }, [fetchData]);
 
     useFocusEffect(
-        React.useCallback(() => {
-            fetchData(); // Gọi hàm tải danh sách sản phẩm khi trang Home được focus lại
-        }, [])
+        useCallback(() => {
+            fetchData();
+        }, [fetchData])
     );
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            if (flatListRef.current) {
+                setScrollOffset(prevOffset => {
+                    const newOffset = prevOffset + itemWidth * scrollDirection;
+                    const maxOffset = (data.length - 1) * itemWidth;
+
+                    if (newOffset >= maxOffset || newOffset <= 0) {
+                        setScrollDirection(prevDirection => prevDirection * -1);
+                    }
+
+                    return newOffset;
+                });
+                flatListRef.current.scrollToOffset({ offset: scrollOffset, animated: true });
+            }
+        }, 2000);
+
+        return () => clearInterval(intervalId);
+    }, [scrollOffset, scrollDirection, itemWidth]);
 
     const themSPvaoCart = (id) => {
         axios.post(`http://${api}/apiSHopQuanAo/Cart/api_cart.php`, {
-            userId: id_user, // Sử dụng id_user từ params
+            userId: id_user,
             productId: id,
         })
-        .then(response => {
-            Alert.alert("Thông báo", response.data.message);
-        })
-        .catch(error => {
-            console.error(error);
-        });
-        fetchData()
+            .then(response => {
+                Alert.alert("Thông báo", response.data.message);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        fetchData();
     };
 
     const searchSanPham = () => {
@@ -70,7 +101,7 @@ export default function Home() {
 
     const Item = ({ id, name, price, des, img }) => {
         const gotoDetail = () => {
-            navigation.navigate('detail', { productId: id, userId: id_user }); // Truyền id_user vào chi tiết sản phẩm
+            navigation.navigate('detail', { productId: id, userId: id_user });
         };
         return (
             <TouchableOpacity onPress={gotoDetail}>
@@ -93,6 +124,12 @@ export default function Home() {
         );
     };
 
+    const render = ({ item }) => (
+        <View style={styles.items}>
+            <Image style={{ width: 380, height: 130 ,resizeMode:"cover" }} source={{ uri: item.hinhanh }} />
+        </View>
+    );
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -112,7 +149,14 @@ export default function Home() {
                 </View>
                 <View style={styles.body_listSP}>
                     <View style={styles.body_titleList}>
-                        <Text style={styles.body_textListsp}>Danh sách sản phẩm</Text>
+                        <FlatList
+                            ref={flatListRef}
+                            data={data}
+                            renderItem={render}
+                            keyExtractor={item => item.id}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                        />
                     </View>
                     <View style={styles.listSP}>
                         <FlatList
@@ -123,7 +167,7 @@ export default function Home() {
                     </View>
                 </View>
             </View>
-            <Footer userID={id_user}/>
+            <Footer userID={id_user} />
         </View>
     );
 }

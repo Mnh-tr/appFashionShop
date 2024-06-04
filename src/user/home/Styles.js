@@ -148,6 +148,11 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: '#fff',
   },
+  items: {
+    width: Dimensions.get('window').width,
+    height: 100,
+    alignItems: 'center'
+  },
 })
 
 export default styles;
