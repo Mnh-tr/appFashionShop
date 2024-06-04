@@ -61,6 +61,27 @@ const styles = StyleSheet.create({
         //fontWeight: 'bold',
         fontSize: 20,
         marginLeft: 7
-    }
+    },
+    imagePickerContainer: {
+        alignItems: 'center',
+        
+    },
+    selectedImage: {
+        width: 89,
+        height: 96,
+        marginTop: 20,
+        borderRadius: 10,
+    },
+    imagePickerButton: {
+        backgroundColor: '#378CE7',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+    },
+    imagePickerButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 })
 export default styles;

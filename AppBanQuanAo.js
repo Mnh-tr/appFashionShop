@@ -17,11 +17,10 @@ import Detail from './src/user/detailSP/Detail';
 import Pay from './src/user/pay/Pay';
 import Pays from './src/user/pays/Pays';
 import History from './src/user/history/History';
-import styles from './StylesAppBQA';
+
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 import QLUser from './src/qlUser/QLUser';
-import QLdonHang from './src/qlDonHang/QLdonHang';
 import Thongke from './src/thongke/Thongke';
 import BieuDo from './src/bieuDo/BieuDo';
 function AdminDrawer() {
@@ -30,7 +29,6 @@ function AdminDrawer() {
       <Drawer.Screen name="Admin Dashboard" component={Admin} />
       <Drawer.Screen name="Thêm sản phẩm" component={AddSp} />
       <Drawer.Screen name="Quản lý user" component={QLUser} />
-      <Drawer.Screen name="Quản lý đơn hàng" component={QLdonHang} />
       <Drawer.Screen name="Thống kê" component={Thongke} />
       <Drawer.Screen name="Biểu Đồ" component={BieuDo} />
       <Drawer.Screen name="Thoát" component={Login} options={{ headerShown: false }} />

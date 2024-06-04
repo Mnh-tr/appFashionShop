@@ -6,7 +6,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { Picker } from '@react-native-picker/picker';
 import { api } from '../../api/config';
 import axios from 'axios';
-
+import * as ImagePicker from 'expo-image-picker';
 export default function Edit() {
     const route = useRoute();
     const navigation = useNavigation();
@@ -80,7 +80,18 @@ export default function Edit() {
         setSoLuong('');
         setDanhMuc('');
     }
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [2, 3],
+            quality: 1,
+        });
 
+        if (!result.canceled) {
+            setImg(result.assets[0].uri);
+        }
+    };
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -115,12 +126,19 @@ export default function Edit() {
                         value={mota}
                         placeholder="Mô tả sản phẩm"
                     />
-                    <TextInput
+                    {/* <TextInput
                         style={styles.input}
                         onChangeText={(anh) => setImg(anh)}
                         value={anh}
                         placeholder="Nhập link ảnh"
-                    />
+                    /> */}
+                    <View style={styles.imagePickerContainer}>
+                        {anh ? <Image source={{ uri: anh }} style={styles.selectedImage} /> : null}
+                        <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
+                            <Text style={styles.imagePickerButtonText}>Chọn ảnh</Text>
+                        </TouchableOpacity>
+
+                    </View>
                     <Picker
                         style={styles.inputPicker}
                         selectedValue={danhMuc}
